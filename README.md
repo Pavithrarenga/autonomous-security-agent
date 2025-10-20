@@ -46,6 +46,8 @@ We then orchestrated all four agents through a central application layer deploye
 
 ## Architecture
 
+![ASA Architecture Diagram](./ASA_Architecture.png)
+
 ## How to Run
 
 ### Prerequisites
