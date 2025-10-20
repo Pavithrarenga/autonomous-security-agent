@@ -198,7 +198,8 @@ sam logs -n InvokeLambdaFunction --stack-name asa-stack --tail
 **View Bedrock Agentcore logs:**
 
 -   Check CloudWatch Logs in AWS Console
--   Log group: `/aws/bedrock/agentcore/<agent-id>`
+-   Log group: `/aws/bedrock/agentcore/runtimes/<agent-id>`
+-   Log group for agent container build: `/aws/codebuild/bedrock-agentcore-app-builder`
 
 
 ### Cleanup
