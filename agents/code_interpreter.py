@@ -33,50 +33,6 @@ def apply_fix_to_sandbox(file_path: str, fix_content: str, sandbox_path: str) ->
         return f"Error applying fix: {str(e)}"
 
 @tool
-def update_package_json(sandbox_path: str, package_name: str, new_version: str) -> str:
-    """Update a package version in package.json."""
-    try:
-        package_json_path = os.path.join(sandbox_path, 'package.json')
-        
-        with open(package_json_path, 'r') as f:
-            package_data = json.load(f)
-        
-        # Update in dependencies
-        if 'dependencies' in package_data and package_name in package_data['dependencies']:
-            old_version = package_data['dependencies'][package_name]
-            package_data['dependencies'][package_name] = new_version
-            
-            with open(package_json_path, 'w') as f:
-                json.dump(package_data, f, indent=2)
-            
-            return f"Updated {package_name} from {old_version} to {new_version} in package.json"
-        else:
-            return f"Package {package_name} not found in dependencies"
-            
-    except Exception as e:
-        return f"Error updating package.json: {str(e)}"
-
-@tool
-def run_npm_install(sandbox_path: str) -> str:
-    """Run npm install in the sandbox."""
-    try:
-        result = subprocess.run(
-            ['npm', 'install'],
-            cwd=sandbox_path,
-            capture_output=True,
-            text=True,
-            timeout=300
-        )
-        
-        if result.returncode == 0:
-            return f"✅ npm install completed successfully"
-        else:
-            return f"❌ npm install failed: {result.stderr[:500]}"
-            
-    except Exception as e:
-        return f"Error running npm install: {str(e)}"
-
-@tool
 def analyze_and_test_application(sandbox_path: str) -> str:
     """Intelligently analyze application structure and create appropriate tests."""
     try:
@@ -178,21 +134,13 @@ def upload_agent_results(session, bucket_name, agent_type, repo_name, results):
 
 def get_code_interpreter_system_prompt():
     return """
-You are an advanced code interpreter agent with sandbox testing capabilities. Your role is to:
+You are a code interpreter validator. I need you to test a proposed security fix in a sandbox environment.
 
 1. **Sandbox Setup**: Copy the target repository to a safe sandbox environment
 2. **Fix Application**: Apply fixes to the sandbox environment
 3. **Testing**: Run the application in sandbox to ensure fixes don't break functionality
 4. **Validation**: Re-scan the fixed code to confirm vulnerabilities are resolved
 5. **Recommendation**: Provide go/no-go recommendation for applying fixes to production
-
-Your workflow:
-1. Setup sandbox environment with repository code using setup_sandbox_environment
-2. Apply fix using update_package_json or apply_fix_to_sandbox
-3. Run npm install using run_npm_install
-4. Run application tests using analyze_and_test_application
-5. Run security scan using validate_fix_effectiveness
-6. Return comprehensive test results and recommendation (APPROVE/REJECT)
 
 Be thorough but efficient. Focus on critical functionality and security validation.
 """
@@ -211,15 +159,13 @@ def create_code_interpreter_agent(session, original_repo_path, original_vuln_rep
         model=bedrock_model,
         system_prompt=get_code_interpreter_system_prompt(),
         tools=[
-            setup_sandbox_environment,
+            setup_sandbox_environment,  
             apply_fix_to_sandbox,
-            update_package_json,
-            run_npm_install,
             analyze_and_test_application,
             validate_fix_effectiveness
         ],
     )
-
+    
 def analyze_app_structure(repo_path: str) -> str:
     """Analyze repository structure to understand the application."""
     structure_info = []
@@ -388,22 +334,20 @@ def code_interpreter_main(original_repo_path, original_vuln_report):
         agent = create_code_interpreter_agent(session, original_repo_path, original_vuln_report)
         
         # Enhanced prompt for intelligent testing
-        test_prompt = f"""
-        You are a code interpreter validator. I need you to test a proposed security fix in a sandbox environment.
+        prompt = f"""
         
         Original repository path: {original_repo_path}
         Sandbox path: {sandbox_path}
         Original vulnerability report: {original_vuln_report}
         
-        Analyse the Proposed fix from original_vuln_report and execute the following steps to validate its effectiveness:
+        Analyse the Proposed fix from {original_vuln_report} and execute the following steps to validate its effectiveness in the sandbox_path:
         
         Please execute these steps:
         1. Use setup_sandbox_environment to copy the repo to sandbox
-        2. Use update_package_json to update the vulnerable dependency as per the proposed fix.
-        3. Use run_npm_install to install updated dependencies
-        4. Use analyze_and_test_application to test the application
-        5. Use validate_fix_effectiveness to verify the CVE is fixed
-        6. Provide a recommendation (APPROVE/REJECT) with detailed reasoning
+        2. Use apply_fix_to_sandbox to fix the vulnerabilities as per the suggestions provided.
+        3. Use analyze_and_test_application to test the application.
+        4. Use validate_fix_effectiveness to verify the CVE is fixed
+        5. Provide a recommendation (APPROVE/REJECT) with detailed reasoning
         
         Focus on:
         - Successful dependency update
@@ -412,7 +356,7 @@ def code_interpreter_main(original_repo_path, original_vuln_report):
         - Analysis for the first found CVE has been resolved
         """
         
-        response = agent(test_prompt)
+        response = agent(prompt)
         # Upload results to S3
         bucket_name = 'security-agent-results'
         upload_result = upload_agent_results(session, bucket_name, "code_interpreter_results", original_repo_path, str(response))
