@@ -1,11 +1,9 @@
-from strands import Agent, tool
-from strands_tools import file_read, file_write, code_interpreter, memory
+from strands import Agent
+from strands_tools import file_read
 from strands.models import BedrockModel
-import json
 import boto3
 import os
 import subprocess
-import sys
 from datetime import datetime
 
 os.environ["BUCKET_NAME"] = "security-agent-results"
@@ -130,9 +128,6 @@ def scanner_main(file_path):
     trivy_ouput = run_trivy_scan(file_path)
     response = agent(f"Analyze the application in the {file_path} directory for security vulnerabilities. Match the issues you find with corresponding CVES. Use the following output from trivy to validate and supplement your findings: {trivy_ouput}. Just provide a list of issues with explanation, don't provide details of your thinking process.")
 
-    # print(type(response))
-    # print("Printing Response Object")
-    # print(response)
     # Upload results to S3
     bucket_name = 'security-agent-results'
     repo_name = os.path.basename(file_path)

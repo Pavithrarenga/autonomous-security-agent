@@ -2,7 +2,8 @@ bedrock-agentcore
 strands-agents 
 strands-agents-tools
 boto3
-faiss-cpu
 mem0ai
 opensearch-py
 pathlib
+PyGithub
+gitpython

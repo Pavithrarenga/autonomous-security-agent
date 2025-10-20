@@ -6,9 +6,10 @@ from strands_tools import file_read
 import os
 import re
 from pathlib import Path
-import sys
 from datetime import datetime
 
+# Set Tavily API key
+os.environ["TAVILY_API_KEY"] = "YOUR_TAVILY_API_KEY"
 os.environ["BUCKET_NAME"] = "security-agent-results"
 
 def upload_agent_results(session, bucket_name, agent_type, repo_name, results):

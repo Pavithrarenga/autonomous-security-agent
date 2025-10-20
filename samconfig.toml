@@ -1,0 +1,10 @@
+version = 0.1
+[default.deploy.parameters]
+stack_name = "asa-stack"
+resolve_s3 = true
+s3_prefix = "asa-stack"
+region = "ap-southeast-2"
+confirm_changeset = true
+capabilities = "CAPABILITY_IAM"
+parameter_overrides = "FunctionName=\"vulnerability-scanner-agent\""
+image_repositories = []

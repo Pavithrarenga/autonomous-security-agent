@@ -1,0 +1,50 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+
+Parameters:
+  FunctionName:
+    Type: String
+    Default: vulnerability-scanner-agent
+
+Globals:
+  Api:
+    Cors:
+      AllowMethods: "'POST, GET, OPTIONS'"
+      AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+      AllowOrigin: "'*'"
+
+Resources:
+  VulnerabilityScanner:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Ref FunctionName
+      CodeUri: .
+      Handler: lambda_handler.lambda_handler
+      Runtime: python3.12
+      Timeout: 900
+      MemorySize: 3008
+      Environment:
+        Variables:
+          PYTHONPATH: /var/task
+      Policies:
+        - S3FullAccessPolicy:
+            BucketName: fixed-repo
+        - Statement:
+          - Effect: Allow
+            Action:
+              - bedrock:*
+            Resource: "*"
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Path: /scan
+            Method: post
+
+Outputs:
+  ApiUrl:
+    Description: "API Gateway endpoint URL"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/scan"
+  FunctionName:
+    Description: "Lambda Function Name"
+    Value: !Ref VulnerabilityScanner
