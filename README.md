@@ -1,14 +1,14 @@
 # Autonomous Security Agent
 
 ## Contents
-- [Project Inspiration](https://github.com/Pavithrarenga/autonomous-security-agent/edit/main/README.md#project-inspiration)
-- [What It Does](https://github.com/Pavithrarenga/autonomous-security-agent/edit/main/README.md#what-it-does)
-- [How We Built It](https://github.com/Pavithrarenga/autonomous-security-agent/edit/main/README.md#how-we-built-it)
-- [How To Run](https://github.com/Pavithrarenga/autonomous-security-agent/edit/main/README.md#how-to-run)
-- [Challenges We Ran Into](https://github.com/Pavithrarenga/autonomous-security-agent/edit/main/README.md#challenges-we-ran-into)
-- [Accomplishments We’re Proud Of](https://github.com/Pavithrarenga/autonomous-security-agent/edit/main/README.md#accomplishments-were-proud-of)
-- [What We Learned](https://github.com/Pavithrarenga/autonomous-security-agent/edit/main/README.md#what-we-learned)
-- [What’s Next for Autonomous Security Agent](https://github.com/Pavithrarenga/autonomous-security-agent/edit/main/README.md#whats-next-for-autonomous-security-agent)
+- [Project Inspiration](https://github.com/Pavithrarenga/autonomous-security-agent/blob/main/README.md#project-inspiration)
+- [What It Does](https://github.com/Pavithrarenga/autonomous-security-agent/blob/main/README.md#what-it-does)
+- [How We Built It](https://github.com/Pavithrarenga/autonomous-security-agent/blob/main/README.md#how-we-built-it)
+- [How To Run](https://github.com/Pavithrarenga/autonomous-security-agent/blob/main/README.md#how-to-run)
+- [Challenges We Ran Into](https://github.com/Pavithrarenga/autonomous-security-agent/blob/main/README.md#challenges-we-ran-into)
+- [Accomplishments We’re Proud Of](https://github.com/Pavithrarenga/autonomous-security-agent/blob/main/README.md#accomplishments-were-proud-of)
+- [What We Learned](https://github.com/Pavithrarenga/autonomous-security-agent/blob/main/README.md#what-we-learned)
+- [What’s Next for Autonomous Security Agent](https://github.com/Pavithrarenga/autonomous-security-agent/blob/main/README.md#whats-next-for-autonomous-security-agent)
 
 ## Project Inspiration
 Developers often struggle to identify and remediate security issues in their code - especially when they lack a dedicated security team or deep security expertise. As software engineers, we’ve personally experienced this challenge. The common joke that “developers don’t care about security” isn’t entirely unfounded - most of us are focused on building products that _work_, often without enough bandwidth to ensure they’re _secure_.
